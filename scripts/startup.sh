@@ -47,7 +47,6 @@ elif [ $STARTUP_MODE == "new" ]
 then
 
     # enable API to be served on any browser page when in developent, but only production web-app in production
-    dasel put bool   -f /root/.duality/config/app.toml    ".api.enable" "true";
     dasel put bool   -f /root/.duality/config/app.toml    ".api.enabled-unsafe-cors" "$([[ $IS_MAINNET ]] && echo "false" || echo "true")"
     dasel put string -f /root/.duality/config/config.toml ".rpc.cors_allowed_origins" "$([[ $IS_MAINNET ]] && echo "app.duality.xyz" || echo "*")"
     # todo: add Prometheus telemetry
