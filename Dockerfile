@@ -45,26 +45,29 @@ RUN apk add --update \
     # required for HTTPS to connect properly
     ca-certificates
 
-# Install testnet utils when not on a production chain
-ARG NETWORK=duality-1
-RUN if [[ ! "$NETWORK" =~ "^duality-\d+$" ]]; \
-    then \
-        # install TOML editing tool dasel for complicated TOML edits \
-        wget https://github.com/TomWright/dasel/releases/download/v1.27.3/dasel_linux_arm64.gz; \
-        gzip -d dasel_linux_arm64.gz; \
-        chmod 755 dasel_linux_arm64; \
-        mv ./dasel_linux_arm64 /usr/local/bin/dasel; \
-    fi
+# install TOML editing tool dasel for complicated TOML edits \
+RUN wget https://github.com/TomWright/dasel/releases/download/v1.27.3/dasel_linux_arm64.gz; \
+    gzip -d dasel_linux_arm64.gz; \
+    chmod 755 dasel_linux_arm64; \
+    mv ./dasel_linux_arm64 /usr/local/bin/dasel;
 
 WORKDIR /usr/src
 
 # Copy over binaries from the build-env
 COPY --from=build-env /usr/src/build/dualityd_arm64 /usr/bin/dualityd
 
-# Copy our configuration settings
-COPY docker/fullnode/app.toml /root/.duality/config/app.toml
-COPY docker/fullnode/client.toml /root/.duality/config/client.toml
-COPY docker/fullnode/config.toml /root/.duality/config/config.toml
+ARG NETWORK=duality-1
+# Initialize configuration
+RUN dualityd init --chain-id $NETWORK duality
+# Add our configuration settings, starting with enabling the API in non-production
+RUN dasel put bool -f /root/.duality/config/app.toml ".api.enable" $([[ ! "$NETWORK" =~ "^duality-\d+$" ]] && echo "true" || echo "false"); \
+    # add Prometheus telemetry \
+    dasel put bool -f /root/.duality/config/app.toml ".telemetry.enable" "true"; \
+    dasel put int -f /root/.duality/config/app.toml ".telemetry.prometheus-retention-time" "60"; \
+    # todo: the following line has an error \
+    # dasel put document -f /root/.duality/config/app.toml -r json -w toml ".telemetry.global-labels" '[["chain_id", "duality"]]'; \
+    # ensure listening to the RPC port doesn't block outgoing RPC connections \
+    dasel put string -f /root/.duality/config/config.toml ".rpc.laddr" "tcp://0.0.0.0:26657";
 
 # expose ports
 # rpc

@@ -14,9 +14,6 @@ fi
 
 echo "Startup mode: $STARTUP_MODE"
 
-echo "Initializing chain..."
-dualityd init --chain-id $NETWORK duality
-
 # replace moniker in the config
 sed -i 's#moniker = ".*"#moniker = "'"$NODE_MONIKER"'"#' /root/.duality/config/config.toml
 
@@ -34,9 +31,6 @@ then
 # start testnet
 elif [ $STARTUP_MODE == "new" ]
 then
-
-    # enable Swagger API page
-    dasel put bool -f /root/.duality/config/app.toml ".api.enable" "true"
 
     # duplicate genesis for easier merging and recovery
     cp /root/.duality/config/genesis.json /root/.duality/config/genesis-init.json
