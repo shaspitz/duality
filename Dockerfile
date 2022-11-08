@@ -61,11 +61,7 @@ ARG NETWORK=duality-1
 RUN dualityd init --chain-id $NETWORK duality
 # Add our configuration settings, starting with enabling the API in non-production
 RUN dasel put bool -f /root/.duality/config/app.toml ".api.enable" $([[ ! "$NETWORK" =~ "^duality-\d+$" ]] && echo "true" || echo "false"); \
-    # add Prometheus telemetry \
-    dasel put bool -f /root/.duality/config/app.toml ".telemetry.enable" "true"; \
-    dasel put int -f /root/.duality/config/app.toml ".telemetry.prometheus-retention-time" "60"; \
-    # todo: the following line has an error \
-    # dasel put document -f /root/.duality/config/app.toml -r json -w toml ".telemetry.global-labels" '[["chain_id", "duality"]]'; \
+    # todo: add telemetry \
     # ensure listening to the RPC port doesn't block outgoing RPC connections \
     dasel put string -f /root/.duality/config/config.toml ".rpc.laddr" "tcp://0.0.0.0:26657";
 
