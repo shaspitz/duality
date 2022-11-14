@@ -577,7 +577,7 @@ func (k Keeper) WithdrawCore(goCtx context.Context, msg *types.MsgWithdrawl, tok
 
 		// emits event for individiual withdrawl
 		ctx.EventManager().EmitEvent(types.CreateWithdrawEvent(msg.Creator, msg.Receiver,
-			token0, token1, fmt.Sprint(msg.TickIndexes), fmt.Sprint(msg.FeeIndexes), upperTick.TickData.Reserve0AndShares[msg.FeeIndexes[i]].Reserve0.Add(reserve0ToRemove).String(), lowerTick.TickData.Reserve1[msg.FeeIndexes[i]].Add(reserve1ToRemove).String(),
+			token0, token1, fmt.Sprint(msg.TickIndexes[i]), fmt.Sprint(msg.FeeIndexes[i]), upperTick.TickData.Reserve0AndShares[msg.FeeIndexes[i]].Reserve0.Add(reserve0ToRemove).String(), lowerTick.TickData.Reserve1[msg.FeeIndexes[i]].Add(reserve1ToRemove).String(),
 			upperTick.TickData.Reserve0AndShares[msg.FeeIndexes[i]].Reserve0.String(), lowerTick.TickData.Reserve1[msg.FeeIndexes[i]].String(),
 		))
 	}
