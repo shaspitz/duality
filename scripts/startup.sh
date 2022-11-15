@@ -90,16 +90,18 @@ then
     # custom account
     if [[ ! -z "$MNEMONIC" ]]
     then
+        echo "\nadd custom account from mnemonic:\n$mnemonic\n"
         echo -n "$MNEMONIC" | dualityd keys add custom-user --recover --keyring-backend test
         dualityd add-genesis-account $(dualityd keys show custom-user -a --keyring-backend test) ${B}token,${B}stake --keyring-backend test
     fi
     # custom accounts
     if [[ ! -z "$MNEMONICS" ]]
     then
+        echo "\nadd custom accounts from mnemonic\n"
         i=1
         while mnemonic=$(echo "$MNEMONICS" | cut -d\; -f$i | xargs echo -n); [ -n "$mnemonic" ]
         do
-            echo "$i: $mnemonic"
+            echo "custom-user-$i from mnemonic:\n$mnemonic"
             echo $mnemonic | dualityd keys add custom-user-$i --recover --keyring-backend test
             dualityd add-genesis-account $(dualityd keys show custom-user-$i -a --keyring-backend test) ${B}token,${B}stake --keyring-backend test
             i=$((i+1))
