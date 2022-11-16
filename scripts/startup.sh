@@ -82,18 +82,18 @@ then
     # custom account
     if [[ ! -z "$MNEMONIC" ]]
     then
-        echo "\nadd custom account from mnemonic:\n$mnemonic\n"
+        printf '\n%s\n%s\n' 'add custom account from mnemonic:' "$mnemonic"
         echo -n "$MNEMONIC" | dualityd keys add custom-user --recover --keyring-backend test
         dualityd add-genesis-account $(dualityd keys show custom-user -a --keyring-backend test) ${B}token,${B}stake --keyring-backend test
     fi
     # custom accounts
     if [[ ! -z "$MNEMONICS" ]]
     then
-        echo "\nadd custom accounts from mnemonic\n"
+        printf '\n%s\n' 'add custom accounts from mnemonic'
         i=1
         while mnemonic=$(echo "$MNEMONICS" | cut -d\; -f$i | xargs echo -n); [ -n "$mnemonic" ]
         do
-            echo "custom-user-$i from mnemonic:\n$mnemonic"
+            printf '%s\n%s\n' "custom-user-$i from mnemonic:" "$mnemonic"
             echo $mnemonic | dualityd keys add custom-user-$i --recover --keyring-backend test
             dualityd add-genesis-account $(dualityd keys show custom-user-$i -a --keyring-backend test) ${B}token,${B}stake --keyring-backend test
             i=$((i+1))
@@ -207,7 +207,7 @@ else
         echo "Node has caught up to chain height"
 
         # add validator key (--no-backup ensures the terminal from seeing/logging the MNEMONIC value)
-        echo $MNEMONIC | dualityd keys add validator --recover --no-backup
+        echo -n "$MNEMONIC" | dualityd keys add validator --recover --no-backup
 
         # sent request to become a validator (to the first RPC address defined)
         dualityd tx staking create-validator \
