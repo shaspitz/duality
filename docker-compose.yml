@@ -154,26 +154,7 @@ services:
       args:
         NETWORK: duality-testnet-1
         NODE_ID: 0
-    command: >
-      /bin/bash -c '
-        #!/bin/bash
-        set -e
-
-        # wait a bit for the leader to start the chain
-        sleep 10;
-
-        # start chain and become a node
-        KEEP_RUNNING=false sh ./scripts/startup.sh
-
-        # wait for a block or so
-        sleep 10;
-
-        # run tests for this node
-        bash /root/.duality/scripts/run_tests_of_indexes.sh;
-
-        # keep container running
-        tail -f /dev/null;
-      '
+    command: sh /root/.duality/scripts/start.sh
     environment:
       - DEBUG=1
       - NODE_MONIKER=node0
@@ -208,26 +189,7 @@ services:
       args:
         NETWORK: duality-testnet-1
         NODE_ID: 1
-    command: >
-      /bin/bash -c '
-        #!/bin/bash
-        set -e
-
-        # wait a bit for the leader to start the chain
-        sleep 10;
-
-        # start chain and become a node
-        KEEP_RUNNING=false sh ./scripts/startup.sh
-
-        # wait for a block or so
-        sleep 10;
-
-        # run tests for this node
-        bash /root/.duality/scripts/run_tests_of_indexes.sh;
-
-        # keep container running
-        tail -f /dev/null;
-      '
+    command: sh /root/.duality/scripts/start.sh
     environment:
       - DEBUG=0
       - NODE_MONIKER=node1
@@ -262,26 +224,7 @@ services:
       args:
         NETWORK: duality-testnet-1
         NODE_ID: 2
-    command: >
-      /bin/bash -c '
-        #!/bin/bash
-        set -e
-
-        # wait a bit for the leader to start the chain
-        sleep 10;
-
-        # start chain and become a node
-        KEEP_RUNNING=false sh ./scripts/startup.sh
-
-        # wait for a block or so
-        sleep 10;
-
-        # run tests for this node
-        bash /root/.duality/scripts/run_tests_of_indexes.sh;
-
-        # keep container running
-        tail -f /dev/null;
-      '
+    command: sh /root/.duality/scripts/start.sh
     environment:
       - DEBUG=0
       - NODE_MONIKER=node2
@@ -316,26 +259,7 @@ services:
       args:
         NETWORK: duality-testnet-1
         NODE_ID: 3
-    command: >
-      /bin/bash -c '
-        #!/bin/bash
-        set -e
-
-        # wait a bit for the leader to start the chain
-        sleep 10;
-
-        # start chain and become a node
-        KEEP_RUNNING=false sh ./scripts/startup.sh
-
-        # wait for a block or so
-        sleep 10;
-
-        # run tests for this node
-        bash /root/.duality/scripts/run_tests_of_indexes.sh;
-
-        # keep container running
-        tail -f /dev/null;
-      '
+    command: sh /root/.duality/scripts/start.sh
     environment:
       - DEBUG=0
       - NODE_MONIKER=node3
