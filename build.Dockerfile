@@ -27,8 +27,9 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/root/go/pkg/mod \
     CGO_ENABLED=1 \
-    # # CC=aarch64-linux-gnu-gcc \
     GOOS=linux \
+    # CC=aarch64-linux-gnu-gcc \
+    # GOARCH=arm64 \
     GOARCH=amd64 \
 	GOFLAGS='-buildmode=pie' \
 	CGO_CPPFLAGS="-D_FORTIFY_SOURCE=2" \
