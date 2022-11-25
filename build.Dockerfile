@@ -1,0 +1,39 @@
+# [Choice] Go version (use -bullseye variants on local arm64/Apple Silicon): 1, 1.16, 1.17, 1-bullseye, 1.16-bullseye, 1.17-bullseye, 1-buster, 1.16-buster, 1.17-buster
+FROM golang:1.18-bullseye as build-env
+
+# install additional OS packages.
+RUN apt update && \
+    apt upgrade -y
+
+RUN apt-get install -y \
+    build-essential \
+    # must install cross compiler for arm64
+    # gcc-aarch64-linux-gnu \
+    ca-certificates
+
+WORKDIR /usr/src
+
+# Get Go dependencies
+COPY go.mod ./go.mod
+COPY go.sum ./go.sum
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/root/go/pkg/mod \
+    go mod download
+
+# Copy rest of files
+COPY . .
+
+# compile dualityd to ARM64 architecture for final image
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/root/go/pkg/mod \
+    # CGO_ENABLED=1 \
+    # # CC=aarch64-linux-gnu-gcc \
+    GOOS=linux \
+    GOARCH=amd64 \
+	GOFLAGS='-buildmode=pie' \
+	CGO_CPPFLAGS="-D_FORTIFY_SOURCE=2" \
+	CGO_LDFLAGS="-Wl,-z,relro,-z,now -fstack-protector" \
+    go build -o /usr/bin/dualityd ./cmd/dualityd
+
+# default to serving the chain with default data and name
+CMD ["cp", "/usr/bin/dualityd", "./build/dualityd"]
