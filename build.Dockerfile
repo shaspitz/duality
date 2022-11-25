@@ -26,7 +26,7 @@ COPY . .
 # compile dualityd to ARM64 architecture for final image
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/root/go/pkg/mod \
-    # CGO_ENABLED=1 \
+    CGO_ENABLED=1 \
     # # CC=aarch64-linux-gnu-gcc \
     GOOS=linux \
     GOARCH=amd64 \
