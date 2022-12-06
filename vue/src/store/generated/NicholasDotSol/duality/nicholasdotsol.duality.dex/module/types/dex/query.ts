@@ -193,7 +193,7 @@ export interface QueryGetLimitOrderTrancheRequest {
   pairId: string;
   tickIndex: number;
   token: string;
-  trancheIndex: number;
+  count: number;
 }
 
 export interface QueryGetLimitOrderTrancheResponse {
@@ -3141,7 +3141,7 @@ const baseQueryGetLimitOrderTrancheRequest: object = {
   pairId: "",
   tickIndex: 0,
   token: "",
-  trancheIndex: 0,
+  count: 0,
 };
 
 export const QueryGetLimitOrderTrancheRequest = {
@@ -3158,8 +3158,8 @@ export const QueryGetLimitOrderTrancheRequest = {
     if (message.token !== "") {
       writer.uint32(26).string(message.token);
     }
-    if (message.trancheIndex !== 0) {
-      writer.uint32(32).uint64(message.trancheIndex);
+    if (message.count !== 0) {
+      writer.uint32(32).uint64(message.count);
     }
     return writer;
   },
@@ -3186,7 +3186,7 @@ export const QueryGetLimitOrderTrancheRequest = {
           message.token = reader.string();
           break;
         case 4:
-          message.trancheIndex = longToNumber(reader.uint64() as Long);
+          message.count = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -3215,10 +3215,10 @@ export const QueryGetLimitOrderTrancheRequest = {
     } else {
       message.token = "";
     }
-    if (object.trancheIndex !== undefined && object.trancheIndex !== null) {
-      message.trancheIndex = Number(object.trancheIndex);
+    if (object.count !== undefined && object.count !== null) {
+      message.count = Number(object.count);
     } else {
-      message.trancheIndex = 0;
+      message.count = 0;
     }
     return message;
   },
@@ -3228,8 +3228,7 @@ export const QueryGetLimitOrderTrancheRequest = {
     message.pairId !== undefined && (obj.pairId = message.pairId);
     message.tickIndex !== undefined && (obj.tickIndex = message.tickIndex);
     message.token !== undefined && (obj.token = message.token);
-    message.trancheIndex !== undefined &&
-      (obj.trancheIndex = message.trancheIndex);
+    message.count !== undefined && (obj.count = message.count);
     return obj;
   },
 
@@ -3254,10 +3253,10 @@ export const QueryGetLimitOrderTrancheRequest = {
     } else {
       message.token = "";
     }
-    if (object.trancheIndex !== undefined && object.trancheIndex !== null) {
-      message.trancheIndex = object.trancheIndex;
+    if (object.count !== undefined && object.count !== null) {
+      message.count = object.count;
     } else {
-      message.trancheIndex = 0;
+      message.count = 0;
     }
     return message;
   },
