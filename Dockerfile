@@ -33,6 +33,20 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     go build -o build/dualityd_arm64 ./cmd/dualityd
 
 
+# image where TypeScript types may be generated
+FROM build-env as tsgen
+
+WORKDIR /usr/src
+
+# install ignite and generate vuex client
+RUN curl https://get.ignite.com/cli@v0.22.0! | bash
+RUN ignite generate vuex -y
+
+# the generated Vue client is at vue/src/store/generated/NicholasDotSol/duality
+# can be copied to the front end for example using:
+# `$ docker run -it --rm -v $PWD/src/lib/web3/generated:/usr/src/ts duality-tsgen cp -r vue/src/store/generated/NicholasDotSol/duality ts`
+
+
 # Final image build on small stable release of ARM64 Linux
 FROM arm64v8/alpine:20220715 as base-env
 
