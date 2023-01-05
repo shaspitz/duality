@@ -33,29 +33,6 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     go build -o build/dualityd_arm64 ./cmd/dualityd
 
 
-# image where TypeScript types may be generated
-FROM arm64v8/alpine:20220715 as tsgen
-
-WORKDIR /usr/src
-
-# install protoc and ts generator
-RUN apk add protoc
-RUN apk add npm~8.1.3 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.15/main
-RUN npm install ts-proto@^1.137.0
-RUN mkdir generated
-
-COPY --from=build-env /go/pkg/mod /go/pkg/mod
-COPY --from=build-env /usr/src/proto ./proto
-
-RUN protoc $(cd proto && find duality -iname "*.proto") \
-    --plugin="$PWD/node_modules/.bin/protoc-gen-ts_proto" \
-    --ts_proto_out="./generated" \
-    --proto_path $PWD/proto \
-    --proto_path /go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.45.7-0.20221104161803-456ca5663c5e/proto \
-    --proto_path /go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.45.7-0.20221104161803-456ca5663c5e/third_party/proto \
-    --proto_path /go/pkg/mod/github.com/tendermint/starport@v0.19.5/starport/pkg/protoc/data/include
-
-
 # Final image build on small stable release of ARM64 Linux
 FROM arm64v8/alpine:20220715 as base-env
 
